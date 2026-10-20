@@ -179,6 +179,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ddc90b25f2d847faa0d171dcb56ee10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  enemyPrefab: {fileID: 6723212666856487154, guid: 1fa4848af526c45a1a0509d0ce447a16, type: 3}
+  speed: 2
+  spawnPoints:
+  - {fileID: 1629460360}
+  - {fileID: 1640333336}
+  - {fileID: 1021753842}
+  - {fileID: 1838730396}
+  - {fileID: 135338362}
+  - {fileID: 629080107}
+  - {fileID: 1821878031}
+  - {fileID: 305064009}
+  numberOfEnemies: 5
 --- !u!4 &171467583
 Transform:
   m_ObjectHideFlags: 0
