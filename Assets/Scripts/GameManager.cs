@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+
         //TODO:  Reiniciamos la ronda pulsando R
         /*
         createdEnemy.transform.position = new Vector3(createdEnemy.transform.position.x + 3 * Time.deltaTime * speed, createdEnemy.transform.position.y, createdEnemy.transform.position.z);
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour
             createdEnemy.transform.position = new Vector3(createdEnemy.transform.position.x + 3 * Time.deltaTime * speed, createdEnemy.transform.position.y, createdEnemy.transform.position.z);
         }
         */
+        MovimientoEnemigos(activeEnemies);
     }
 
     //Generar oleada
@@ -129,7 +131,6 @@ public class GameManager : MonoBehaviour
             Debug.Log("RONDA COMPLETADA");
         }
         // hemos terminado la ronda.
-
         
     }
 
@@ -155,5 +156,35 @@ public class GameManager : MonoBehaviour
 
         // Dejamos vacía la lista.
 
+    }
+
+    //Escribir una función que haga que se muevan los enemigos a la derecha o izquierda de forma pseudoaleatoria con una velocidad configurable desde el editor (desde el gamemanager)
+
+    void MovimientoEnemigos(List<GameObject>enemies)
+    {
+        for(int i = 0; i < enemies.Count; i++)
+        {
+            if(Random.Range(0,2) == 0)
+            {
+                enemies[i].transform.position += new Vector3(speed * Time.deltaTime, 0, 0);
+            }
+            else
+            {
+                enemies[i].transform.position -= new Vector3(speed * Time.deltaTime, 0, 0);
+            }
+        }
+
+        //Version con foreach.
+        //foreach (GameObject enemy in enemies)
+        //{
+        //  if(Random.Range(0,2) == 0)
+        //  {
+        //      enemies.transform.position += new Vector3(speed * Time.deltaTime, 0, 0);
+        //  }
+        //  else
+        //  {
+        //      enemies.transform.position -= new Vector3(speed * Time.deltaTime, 0, 0);
+        //  }
+        //}
     }
 }
