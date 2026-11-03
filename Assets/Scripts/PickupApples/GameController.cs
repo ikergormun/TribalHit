@@ -87,5 +87,6 @@ public class GameController : MonoBehaviour
 
         appleListToRemove.Clear();
 
+        //IMPORTANTE -> Implementar GameOver, es decir, que cuando se escape una manzana se acabe el juego.
     }
 }
