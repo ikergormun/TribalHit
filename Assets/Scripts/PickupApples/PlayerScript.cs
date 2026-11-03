@@ -1,9 +1,16 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerScript : MonoBehaviour
 {
 
     [SerializeField] private float speed;
+    [SerializeField] private float force;
+
+
+    private float horizontalMovement;
+
+    Rigidbody2D rb;
 
     // Límites de la pantalla
     private float minX = -3.5f;
@@ -12,7 +19,7 @@ public class PlayerScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -20,7 +27,8 @@ public class PlayerScript : MonoBehaviour
     {
         //Implementar el movimiento horizontal
         //TO DO
-        if (Input.GetKey(KeyCode.D))
+        
+        /*if (Input.GetKey(KeyCode.D))
         {
             transform.position += Vector3.right * speed * Time.deltaTime;
         }
@@ -30,6 +38,7 @@ public class PlayerScript : MonoBehaviour
             //Otra opcion: transform.position -= Vector3.right * speed * Time.deltaTime;
             transform.position += Vector3.left * speed * Time.deltaTime;
         }
+        */
 
         //Limitar posición
         // Si se pasa por la izquierda, lo frenamos en el límite
@@ -37,7 +46,7 @@ public class PlayerScript : MonoBehaviour
         {
             transform.position = new Vector3(minX, transform.position.y, transform.position.z);
         }
-
+        
         // Si se pasa por la derecha, lo frenamos en el límite
         if(transform.position.x > maxX)
         {
@@ -52,5 +61,54 @@ public class PlayerScript : MonoBehaviour
         //      clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
         //
         //      transform.position = clampedPosition; //Aplicamos la transformacion guardada en la variable temporal.
+
+        //Movimiento con rigidbody. (horizontalMovement)
+        horizontalMovement = Input.GetAxis("Horizontal");
+
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+
+        sr.flipX = ! (horizontalMovement > 0);
+
+        //Velocidad con linear
+        //rb.linearVelocityX = horizontalMovement * speed;
+
+        //Nunca usar esta forma. Hay que ponerlo en el FixedUpdate
+        //rb.AddForce(Vector3.right * force * horizontalMovement);
+    }
+    //Todas las manipulaciones fisicas deben de estar en el fixedupdate
+    private void FixedUpdate()
+    {
+        rb.AddForce(Vector3.right * force * horizontalMovement, ForceMode2D.Force);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        StartCoroutine(nameof(Parpadeo));
+    }
+
+    private IEnumerator Parpadeo()
+    {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+
+
+        //Se podria implementar un bucle.
+        sr.color = Color.red;
+        sr.flipX = true;
+
+        yield return new WaitForSeconds(0.5f);
+
+        sr.color = Color.white;
+        sr.flipX = false;
+
+        yield return new WaitForSeconds(0.5f);
+
+        sr.color = Color.red;
+        sr.flipX = true;
+
+        yield return new WaitForSeconds(0.5f);
+
+        sr.color = Color.white;
+        sr.flipX = false;
+
     }
 }

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -17,6 +18,9 @@ public class GameController : MonoBehaviour
 
     //Temporizador para que se cree una nueva manzana
     private float timer;
+
+    //Variable booleana para GameOver
+    private bool IsGameOver;
     //Para guardar los puntos por cada manzana
     private int score;
     
@@ -29,11 +33,38 @@ public class GameController : MonoBehaviour
         scoreText.text = "Score 0";
         //Timer en Start para que empiece en 0 nada mas comenzar
         timer = 0f;
+        score = 0;
+        IsGameOver = false;
+        //Corrutina
+        StartCoroutine(nameof(GenerarManzana));
+
+        // metodo invoke: InvokeRepeating(nameof(GenerarManzana), 0.5f, 3f);
     }
 
+    private IEnumerator GenerarManzana()
+    {
+        //Creamos una manzana
+        GameObject newApple = Instantiate(applePrefab);
+
+        //Posicionamos la manzana en la parte superior
+        newApple.transform.position = new Vector3(Random.Range(-3.5f, 3.5f), 5.5f);
+
+        //Guardo la manzana creada en la lista.
+        appleList.Add(newApple);
+
+        yield return new WaitForSeconds(10f);
+
+        Debug.Log("Ya han pasado los 10 segundos");
+
+        yield return new WaitForSeconds(5f);
+
+        Debug.Log("Ya han pasado los 5 segundos");
+
+    }
     // Update is called once per frame
     void Update()
     {
+        /*
         //Incrementamos el timer
         timer += Time.deltaTime;
 
@@ -51,19 +82,24 @@ public class GameController : MonoBehaviour
 
             //Guardo la manzana creada en la lista.
             appleList.Add(newApple);
+
         }
+        */
+
         //Creamos otra lista para guardar las manzanas que queremos eliminar
         List<GameObject> appleListToRemove = new List<GameObject>();
         //Mover todas las manzanas
         foreach (GameObject apple in appleList)
         {
-            apple.transform.position += Vector3.down * gravity * ((score+1.0f) / 10.0f) * Time.deltaTime;
+            apple.transform.position += Vector3.down * gravity * ((score+1.0f) / 2.0f) * Time.deltaTime;
 
             //Queremos que el player recoja las manzanas
             //Para cada manzana
             //Compruebo si el player está "cerca
             float distance = Vector3.Distance(apple.transform.position, playerTransform.position); //Utilizo la funcion distance de vector3
-            if(distance < 0.5f)
+
+            //Solo recojo si la manzana toca al personaje y la variable IsGameOver es false
+            if(distance < 0.5f && !IsGameOver)
             {
                 //Quiero que la manzana se elimine
                 Debug.Log("Colision de la manzana");
@@ -74,6 +110,13 @@ public class GameController : MonoBehaviour
                 Debug.Log("Score: " + score);//Impresion por consola de score
 
                 appleListToRemove.Add(apple); //Añado a la lista ToRemove las manzanas que quiero eliminar
+            }
+
+            //GameOver
+            if(apple.transform.position.y < -5.5f)
+            {
+                IsGameOver = true;
+                scoreText.text = "GameOver";
             }
 
         }
